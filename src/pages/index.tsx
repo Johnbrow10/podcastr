@@ -1,23 +1,64 @@
-//  forma SPA
-//  forma SSR
-//  forma SSG
+import { GetStaticProps } from 'next';
+import { api } from '../services/api';
+import { format, parseISO } from "date-fns";
+import ptBR from 'date-fns/locale/pt-BR'
+import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 
-export default function Home(props) {
+
+type Episode = {
+  id: string;
+  title: string;
+  members: string;
+  thumbnail: string;
+  published_at: string
+  duration: number;
+  description: string;
+  durationAsString: string;
+  url: string;
+}
+
+type HomeProps = {
+  episodes: Episode[]
+}
+
+export default function Home(props: HomeProps) {
   return (
     <div>
       <h1>index</h1>
-      <p>{JSON.stringify(props.episodes)}</p>
+      <p>{JSON.stringify(props.episodes) }</p>
     </div>
   )
 }
 
-export async function getStaticProps() {
-  const response = await fetch('http://localhost:3333/episodes');
-  const data = await response.json()
+export const getStaticProps: GetStaticProps = async () => {
+  const { data } = await api.get('episodes', {
+    params: {
+      _limit: 12,
+      _sort: 'published_at',
+      _order: 'desc'
+    }
+  });
+
+  //  Sempre que for alterar algum campo para mostrar no front
+  //  faça essa alteração logo depois de trazer os dados da api
+  const episodes = data.map(episode => {
+    return {
+      id: episode.id,
+      title: episode.title,
+      thumbnail: episode.thumbnail,
+      members: episode.members,
+      // Alterando para formato de data do BRASIL
+      publishedAt: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
+      duration: Number(episode.file.duration),
+      durationAsString: convertDurationToTimeString(Number(episode.file.duration)),
+      description: episode.description,
+      url: episode.file.url,
+    };
+  })
 
   return {
     props: {
-      episodes: data,
+      episodes,
     },
     revalidate: 60 * 60 * 8,
   }
