@@ -33,6 +33,12 @@
   }
 }
 
+@media (max-width: 1366px) {
+  html {
+    font-size: 80%;
+  }
+}
+
 body {
   background: var(--gray-50);
 }
@@ -53,7 +59,7 @@ h5,
 h6 {
   font-weight: 600;
   font-family: Lexend, sans-serif;
-  color: var(--gray-800)
+  color      : var(--gray-800)
 }
 
 h1 {
