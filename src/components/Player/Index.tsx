@@ -22,6 +22,8 @@ export function Player() {
     playPrevious,
     hasPrevious,
     isLooping,
+    toogleShuffle,
+    isShuffling,
     hasNext } = usePlayer();
 
   // toda referencia nao tem valor nela, só tem apenas dentro de uma propriedade chamada current
@@ -100,7 +102,12 @@ export function Player() {
         )}
 
         <div className={styles.buttons}>
-          <button type="button" disabled={!episode}>
+          <button
+            type="button"
+            disabled={!episode || episodeList.length === 1}
+            onClick={toogleShuffle}
+            className={isShuffling ? styles.isActive : ''}
+          >
             <img src="/shuffle.svg" alt="Embaralhar" />
           </button>
           <button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
@@ -116,9 +123,9 @@ export function Player() {
           </button>
           <button
             type="button"
+            onClick={toogleLopp}
             className={isLooping ? styles.isActive : ''}
             disabled={!episode}
-            onClick={toogleLopp}
           >
             <img src="/repeat.svg" alt="Repetir" />
           </button>

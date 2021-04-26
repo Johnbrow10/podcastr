@@ -12,11 +12,13 @@ type PlayerContextData = {
   episodeList: Episode[];
   currentEpisodeIndex: number;
   isPlaying: boolean;
+  isShuffling: boolean;
   play: (episode: Episode) => void;
   playList: (list: Episode[], index: number) => void;
   setPlayingState: (state: boolean) => void;
   togglePlay: () => void;
   toogleLopp: () => void;
+  toogleShuffle: () => void;
   playNext: () => void;
   playPrevious: () => void;
   hasNext: boolean;
@@ -35,6 +37,7 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
+  const [isShuffling, setIsShuffling] = useState(false);
 
 
   function play(episode: Episode) {
@@ -57,6 +60,10 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     setIsLooping(!isLooping)
   }
 
+  function toogleShuffle() {
+    setIsShuffling(!isShuffling)
+  }
+
   // Funcao para ouvir um evento do usuario e alterar o status que estar o audio do usuario
   function setPlayingState(state: boolean) {
     setIsPlaying(state)
@@ -67,8 +74,13 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
   const hasPrevious = currentEpisodeIndex > 0;
 
   function playNext() {
+    if (isShuffling) {
+      const nextRamdomEpisodeIndex = Math.floor(Math.random() * episodeList.length)
 
-    if (hasNext) {
+      setCurrentEpisodeIndex(nextRamdomEpisodeIndex)
+
+    }
+    else if (hasNext) {
       setCurrentEpisodeIndex(currentEpisodeIndex + 1);
     }
   }
@@ -99,6 +111,9 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
         hasPrevious,
         isLooping,
         toogleLopp,
+        toogleShuffle,
+        isShuffling,
+
       }}
     >
       {children}
