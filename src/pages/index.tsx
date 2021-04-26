@@ -1,13 +1,12 @@
+import { format, parseISO } from "date-fns";
+import ptBR from 'date-fns/locale/pt-BR';
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePlayer } from '../contexts/PlayerContext';
 import { api } from '../services/api';
-import { format, parseISO } from "date-fns";
-import ptBR from 'date-fns/locale/pt-BR'
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 import styles from './home.module.scss';
-import { useContext } from 'react';
-import { PlayerContext } from '../contexts/PlayerContext';
 
 
 type Episode = {
@@ -29,7 +28,7 @@ type HomeProps = {
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 
-  const { playList } = useContext(PlayerContext);
+  const { playList } = usePlayer()
 
   // Conceito de imutabilidade em react
   // não atualiza as variaveis com dados novos, exemplo colocar um push no latestEpisodes e all episodes
