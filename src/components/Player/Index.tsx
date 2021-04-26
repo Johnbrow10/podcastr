@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import { useContext, useEffect, useRef } from 'react';
-import { PlayerContext } from '../../contexts/PlayerContext';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import { useEffect, useRef } from 'react';
+import { usePlayer } from '../../contexts/PlayerContext';
 import styles from './styles.module.scss';
-import Slider from 'rc-slider'
 
-import 'rc-slider/assets/index.css'
 
 export function Player() {
 
@@ -16,7 +16,13 @@ export function Player() {
     currentEpisodeIndex,
     isPlaying,
     togglePlay,
-    setPlayingState } = useContext(PlayerContext);
+    setPlayingState,
+    playNext,
+    toogleLopp,
+    playPrevious,
+    hasPrevious,
+    isLooping,
+    hasNext } = usePlayer();
 
   // toda referencia nao tem valor nela, só tem apenas dentro de uma propriedade chamada current
   useEffect(() => {
@@ -86,6 +92,7 @@ export function Player() {
           <audio
             src={episode.url}
             autoPlay
+            loop={isLooping}
             ref={audioRef}
             onPlay={() => setPlayingState(true)}
             onPause={() => setPlayingState(false)}
@@ -96,7 +103,7 @@ export function Player() {
           <button type="button" disabled={!episode}>
             <img src="/shuffle.svg" alt="Embaralhar" />
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasPrevious} onClick={playPrevious}>
             <img src="/play-previous.svg" alt="Tocar Anterior" />
           </button>
           <button type="button" className={styles.playButton} disabled={!episode} onClick={togglePlay}>
@@ -104,10 +111,15 @@ export function Player() {
               ? <img src="/pause.svg" alt="Tocar" />
               : <img src="/play.svg" alt="Tocar" />}
           </button>
-          <button type="button" disabled={!episode}>
+          <button type="button" disabled={!episode || !hasNext} onClick={playNext} >
             <img src="/play-next.svg" alt="Tocar Proxima" />
           </button>
-          <button type="button" className={styles.playButton} disabled={!episode}>
+          <button
+            type="button"
+            className={isLooping ? styles.isActive : ''}
+            disabled={!episode}
+            onClick={toogleLopp}
+          >
             <img src="/repeat.svg" alt="Repetir" />
           </button>
         </div>
