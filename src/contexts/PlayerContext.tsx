@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 type Episode = {
   title: string;
@@ -16,6 +16,12 @@ type PlayerContextData = {
   playList: (list: Episode[], index: number) => void;
   setPlayingState: (state: boolean) => void;
   togglePlay: () => void;
+  toogleLopp: () => void;
+  playNext: () => void;
+  playPrevious: () => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
+  isLooping: boolean;
 };
 
 export const PlayerContext = createContext({} as PlayerContextData);
@@ -28,6 +34,7 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
   const [episodeList, setEpisodeList] = useState([]);
   const [currentEpisodeIndex, setCurrentEpisodeIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
 
 
   function play(episode: Episode) {
@@ -46,10 +53,35 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
     setIsPlaying(!isPlaying)
   }
 
+  function toogleLopp() {
+    setIsLooping(!isLooping)
+  }
+
   // Funcao para ouvir um evento do usuario e alterar o status que estar o audio do usuario
   function setPlayingState(state: boolean) {
     setIsPlaying(state)
   }
+
+
+  const hasNext = (currentEpisodeIndex + 1) < episodeList.length;
+  const hasPrevious = currentEpisodeIndex > 0;
+
+  function playNext() {
+
+    if (hasNext) {
+      setCurrentEpisodeIndex(currentEpisodeIndex + 1);
+    }
+  }
+
+  function playPrevious() {
+    if (hasPrevious) {
+      setCurrentEpisodeIndex(currentEpisodeIndex - 1)
+    }
+  }
+
+
+
+
 
   return (
     <PlayerContext.Provider value={
@@ -60,10 +92,20 @@ export function PlayerContextProvider({ children }: PlayerContextProviderProps) 
         isPlaying,
         togglePlay,
         setPlayingState,
-        playList
+        playList,
+        playNext,
+        playPrevious,
+        hasNext,
+        hasPrevious,
+        isLooping,
+        toogleLopp,
       }}
     >
       {children}
     </PlayerContext.Provider>
   )
+}
+
+export const usePlayer = () => {
+  return useContext(PlayerContext)
 }
