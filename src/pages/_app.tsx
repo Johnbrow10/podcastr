@@ -22,8 +22,21 @@ function MyApp({ Component, pageProps }) {
     setIsPlaying(!isPlaying)
   }
 
+  // Funcao para ouvir um evento do usuario e alterar o status que estar o audio do usuario
+  function setPlayingState(state: boolean) {
+    setIsPlaying(state)
+  }
+
   return (
-    <PlayerContext.Provider value={{ episodeList, currentEpisodeIndex, play, isPlaying, togglePlay }}>
+    <PlayerContext.Provider value={
+      {
+        episodeList,
+        currentEpisodeIndex,
+        play,
+        isPlaying,
+        togglePlay,
+        setPlayingState
+      }}>
       <div className={styles.wrapper}>
         <main>
           <Header />
