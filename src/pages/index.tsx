@@ -29,14 +29,20 @@ type HomeProps = {
 
 export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
 
-  const { play } = useContext(PlayerContext);
+  const { playList } = useContext(PlayerContext);
+
+  // Conceito de imutabilidade em react
+  // não atualiza as variaveis com dados novos, exemplo colocar um push no latestEpisodes e all episodes
+  // e sim espalhar os dados daquelas duas variaveis em uma nova 
+  const episodeList = [...latestEpisodes, ...allEpisodes]
+
   return (
     <div className={styles.homePage}>
       <section className={styles.latestEpisodes}>
         <h2>Ultimos Lançamentos</h2>
 
         <ul>
-          {latestEpisodes.map(episode => {
+          {latestEpisodes.map((episode, index) => {
             return (
               <li key={episode.id}>
                 <Image
@@ -57,7 +63,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   <span>{episode.durationAsString}</span>
                 </div>
 
-                <button type="button" onClick={()=> play(episode)}>
+                <button type="button" onClick={() => playList(episodeList, index)}>
                   <img src="/play-green.svg" alt="Tocar Episodio" /></button>
 
               </li>
@@ -82,7 +88,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
           </thead>
 
           <tbody>
-            {allEpisodes.map(episode => {
+            {allEpisodes.map((episode, index) => {
               return (
                 <tr key={episode.id}>
                   <td style={{ width: 72 }}> <Image
@@ -105,7 +111,8 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   </td>
                   <td> <a href="">{episode.durationAsString}</a></td>
                   <td>
-                    <button type="button">
+                    {/* como o episodeList prga dois arrays de latestEpisodes e AllEpisodes, entao para contar apenas os allEpisodes pegamos oindce com o ultimo indice de latestEpisodes e assim so vai contar o proximo indoce que sera do array de all Episodes*/}
+                    <button type="button" onClick={() => playList(episodeList, index + latestEpisodes.length)}>
                       <img src="/play-green.svg" alt="Tocar Episódio" />
                     </button> </td>
                 </tr>
