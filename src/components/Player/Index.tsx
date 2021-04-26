@@ -11,10 +11,15 @@ export function Player() {
   // useRef da tipagem de elementos que escolhemos, dando assim inteligencia para ele 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const { episodeList, currentEpisodeIndex, isPlaying, togglePlay } = useContext(PlayerContext);
+  const {
+    episodeList,
+    currentEpisodeIndex,
+    isPlaying,
+    togglePlay,
+    setPlayingState } = useContext(PlayerContext);
 
   // toda referencia nao tem valor nela, só tem apenas dentro de uma propriedade chamada current
-  useEffect(() => { 
+  useEffect(() => {
     // se a variavel audioRef nao tiver nehuma referencia nao retornada nada
     if (!audioRef.current) {
       return;
@@ -82,6 +87,8 @@ export function Player() {
             src={episode.url}
             autoPlay
             ref={audioRef}
+            onPlay={() => setPlayingState(true)}
+            onPause={() => setPlayingState(false)}
           />
         )}
 
